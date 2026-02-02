@@ -1,0 +1,2350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ERP System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --primary: #0a66ff;
+      --success: #2b7a2b;
+      --danger: #e74c3c;
+      --muted: #666;
+      --border: #d6dde6;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+    
+    .app {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+    }
+    
+    .tab {
+      padding: 12px 24px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    
+    .tab:hover {
+      color: var(--primary);
+    }
+    
+    .tab.active {
+      color: var(--primary);
+      border-bottom: 2px solid var(--primary);
+      margin-bottom: -2px;
+    }
+    
+    .tab-panel {
+      display: none;
+    }
+    
+    .container {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 20px;
+    }
+    
+    .panel {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    
+    .panel h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      margin-top: 12px;
+    }
+    
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      background: var(--primary);
+      color: white;
+      transition: all 0.2s;
+    }
+    
+    .btn:hover {
+      opacity: 0.9;
+    }
+    
+    .btn.ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    
+    .catalog {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    
+    .top {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .product-list, .enquiry-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    
+    .item:hover {
+      background: #f9fafb;
+    }
+    
+    .meta {
+      margin-bottom: 4px;
+    }
+    
+    .desc {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    
+    .actions-inline {
+      display: flex;
+      gap: 6px;
+    }
+    
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    
+    .icon-btn:hover {
+      background: #f0f0f0;
+    }
+    
+    .empty {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+    }
+    
+    .product-details {
+      margin-top: 12px;
+      padding: 16px;
+      background: #f9fafb;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    
+    .product-details table {
+      width: 100%;
+      margin-top: 8px;
+      border-collapse: collapse;
+    }
+    
+    .product-details th,
+    .product-details td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    #paramTable {
+      width: 100%;
+      margin-top: 8px;
+      border-collapse: collapse;
+    }
+    
+    #paramTable th,
+    #paramTable td {
+      padding: 6px;
+      text-align: left;
+    }
+    
+    #paramTable input {
+      margin: 0;
+    }
+    
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 16px 0;
+    }
+    
+    .inline-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    
+    .sub-label {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    
+    #toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10000;
+    }
+    
+    .toast {
+      background: #2b7a2b;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      opacity: 0;
+      transform: translateX(100px);
+      transition: all 0.25s;
+    }
+    
+    .toast.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 0;
+      width: 20px;
+      height: 20px;
+      line-height: 1;
+    }
+    
+    .ci-product {
+      margin-bottom: 16px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    
+    .ci-product h4 {
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+    <div class="app">
+      <div class="tabs">
+        <div class="tab active" data-tab="products">Product List</div>
+        <div class="tab" data-tab="enquiries">Enquiry</div>
+        <div class="tab" data-tab="clientinput">Client Input</div>
+      </div>
+
+      <!-- PRODUCTS TAB -->
+      <div id="tab-products" class="tab-panel">
+        <div class="container">
+          <!-- Left: product form -->
+          <div class="panel">
+            <h2 id="prodFormTitle">New Product</h2>
+            <form id="productForm" onsubmit="return false;">
+              <input type="hidden" id="prod_id" />
+              <label>Product Name</label>
+              <input id="ProductName" type="text" required />
+
+              <label>Category</label>
+              <input
+                id="ProductCategory"
+                list="ProductCategoryList"
+                placeholder="Type or choose category"
+              />
+              <datalist id="ProductCategoryList">
+                <option value="Vaccuum Feed Gas Chlorination System(0-10Kg)"></option>
+                <option value="Vaccuum Feed Gas Chlorination System(0-20Kg)"></option>
+                <option value="ACLAS"></option>
+                <option value="Neutralization System"></option>
+                <option value="Safety Kit"></option>
+              </datalist>
+
+              <label>Model No.</label>
+              <input id="ModelNo" type="text" />
+
+              <label>Description</label>
+              <textarea id="Description" placeholder="Short description"></textarea>
+
+              <label>Price (₹)</label>
+              <input id="Price" type="number" min="0" />
+
+              <label>Parameters</label>
+              <table id="paramTable" aria-label="Parameters">
+                <thead>
+                  <tr>
+                    <th style="width: 45%">Parameter</th>
+                    <th style="width: 45%">Value</th>
+                    <th style="width: 10%"></th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <div style="margin-top: 8px">
+                <button type="button" id="addParamBtn" class="btn">+ Add Parameter</button>
+              </div>
+
+              <div class="actions">
+                <button id="saveProductBtn" class="btn">Save</button>
+                <button id="clearProductBtn" type="button" class="btn ghost">Clear</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Right: product list -->
+          <div class="catalog">
+            <div class="card">
+              <div class="top">
+                <strong style="flex: 1">Catalog</strong>
+                <button id="importBtn" class="btn ghost">Import</button>
+                <button id="exportCategoryBtn" class="btn ghost">Export Category</button>
+                <select id="categoryFilter" style="padding: 8px; border-radius: 6px; border: 1px solid #d6dde6;">
+                  <option value="">-- All Categories --</option>
+                  <option value="Vaccuum Feed Gas Chlorination System(0-10Kg)">Vaccuum Feed Gas Chlorination System (0–10 Kg)</option>
+                  <option value="Vaccuum Feed Gas Chlorination System(0-20Kg)">Vaccuum Feed Gas Chlorination System (0–20 Kg)</option>
+                  <option value="ACLAS">ACLAS</option>
+                  <option value="Neutralization System">Neutralization System</option>
+                  <option value="Safety Kit">Safety Kit</option>
+                </select>
+              </div>
+              <div class="product-list" id="productList">
+                <div class="empty">No products yet</div>
+              </div>
+            </div>
+
+            <div class="card" id="productViewerCard" style="display: none">
+              <strong>Product Details</strong>
+              <div id="productViewerContent" class="product-details"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ENQUIRY TAB -->
+      <div id="tab-enquiries" class="tab-panel" style="display: none">
+        <div class="container">
+          <!-- Left: enquiry form -->
+          <div class="panel">
+            <h2 id="enqFormTitle">New Enquiry</h2>
+            <form id="enquiryForm" onsubmit="return false;">
+              <input type="hidden" id="enq_id" />
+
+              <label>Client Name</label>
+              <input id="ClientName" type="text" required />
+
+              <label>Place</label>
+              <input id="ClientPlace" type="text" />
+
+              <label>Contact details</label>
+              <input id="ClientContact" type="text" placeholder="Phone or email" />
+
+              <label>Category</label>
+              <select id="EnqCategory" required>
+                <option value="">-- Select Category --</option>
+              </select>
+              <hr />
+
+              <div id="vfgs-010-section" style="display: none">
+                <label>Purpose</label>
+                <select id="EnqPurpose">
+                  <option value="">-- Select Purpose --</option>
+                  <option value="WTP">WTP</option>
+                  <option value="ETP">ETP</option>
+                  <option value="STP">STP</option>
+                </select>
+
+                <div id="prepost-section" style="display: none">
+                  <label>Pre & Post System needed?</label>
+                  <select id="EnqPrePost">
+                    <option value="">-- Select --</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+
+                <div id="prepost-dosage-section" style="display: none">
+                  <label>Required Dosage (Pre / Post)</label>
+                  <div style="display: flex; gap: 10px">
+                    <input id="EnqPreDosage" type="text" placeholder="Pre dosage (ppm)" />
+                    <input id="EnqPostDosage" type="text" placeholder="Post dosage (ppm)" />
+                  </div>
+                </div>
+
+                <!-- PRE & POST SYSTEM COUNTS -->
+                <div id="prepost-system-count" style="display:none">
+                  <label>Pre System</label>
+                  <div class="inline-pair">
+                    <div>
+                      <span class="sub-label">Working</span>
+                      <input id="EnqPreWorking" type="number" min="0" />
+                    </div>
+                    <div>
+                      <span class="sub-label">Standby</span>
+                      <input id="EnqPreStandby" type="number" min="0" />
+                    </div>
+                  </div>
+
+                  <label>Post System</label>
+                  <div class="inline-pair">
+                    <div>
+                      <span class="sub-label">Working</span>
+                      <input id="EnqPostWorking" type="number" min="0" />
+                    </div>
+                    <div>
+                      <span class="sub-label">Standby</span>
+                      <input id="EnqPostStandby" type="number" min="0" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- NORMAL SYSTEM COUNT -->
+                <div id="normal-system-count">
+                  <label>No. of Systems</label>
+                  <div class="inline-pair">
+                    <div>
+                      <span class="sub-label">Working</span>
+                      <input id="EnqSysWorking" type="number" min="0" />
+                    </div>
+                    <div>
+                      <span class="sub-label">Standby</span>
+                      <input id="EnqSysStandby" type="number" min="0" />
+                    </div>
+                  </div>
+                </div>
+
+                <label>Water Type</label>
+                <select id="EnqWaterType">
+                  <option value="">-- Select Water Type --</option>
+                  <option value="Raw">Raw</option>
+                  <option value="Treated">Treated</option>
+                  <option value="Other">Other</option>
+                </select>
+
+                <label>Water Capacity</label>
+                <input id="EnqCapacity" type="text" placeholder="e.g., 5 MLD" />
+
+                <div id="normal-dosage-section">
+                  <label>Required Dosage</label>
+                  <input id="EnqDosage" type="text" placeholder="e.g., 2 ppm" />
+                </div>
+
+                <label>Tonners or Cylinders needed</label>
+                <select id="EnqPackType" required>
+                  <option value="">-- Select --</option>
+                  <option value="Tonners">Tonners</option>
+                  <option value="Cylinders">Cylinders</option>
+                </select>
+
+                <label>No of Tonners / Cylinders</label>
+                <div class="inline-pair">
+                  <div>
+                    <span class="sub-label">Working</span>
+                    <input id="EnqWorking" type="number" min="0" />
+                  </div>
+                  <div>
+                    <span class="sub-label">Standby</span>
+                    <input id="EnqStandby" type="number" min="0" />
+                  </div>
+                </div>
+
+                <label>Absorbstion / Neutralisation System needed</label>
+                <select id="EnqAbsorption">
+                  <option value="">-- Select --</option>
+                  <option value="Absorbstion System">Absorbstion System</option>
+                  <option value="Neutralisation System (Pit)">Neutralisation System (Pit)</option>
+                </select>
+
+                <label>No of Blowers</label>
+                <div class="inline-pair">
+                  <div>
+                    <span class="sub-label">Working</span>
+                    <input id="EnqWorkingBlowers" type="number" min="0" />
+                  </div>
+                  <div>
+                    <span class="sub-label">Standby</span>
+                    <input id="EnqStandbyBlowers" type="number" min="0" />
+                  </div>
+                </div>
+
+                <label>Working Hours</label>
+                <input id="EnqHours" type="text" placeholder="e.g., 8" />
+
+                <div class="small" style="margin-top: 8px">
+                  Note: Either (Purpose and Water Type) or Required Dosage must be provided.
+                </div>
+              </div>
+
+              <div class="actions">
+                <button id="saveEnquiryBtn" class="btn">Save Enquiry</button>
+                <button id="clearEnquiryBtn" type="button" class="btn ghost">Clear</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Right: enquiry list -->
+          <div class="catalog">
+            <div class="card">
+              <div class="top">
+                <strong style="flex: 1">Enquiries</strong>
+                <select id="enqCategoryFilter" style="padding: 8px; border-radius: 6px; border: 1px solid #d6dde6;">
+                  <option value="">-- All Categories --</option>
+                </select>
+              </div>
+              <div class="enquiry-list" id="enquiryList">
+                <div class="empty">No enquiries yet</div>
+              </div>
+            </div>
+
+            <div class="card" id="enqViewerCard" style="display: none">
+              <strong>Enquiry Details</strong>
+              <div id="enqViewerContent" class="product-details"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUOTATION TAB -->
+      <div id="tab-quotation" class="tab-panel" style="display:none">
+        <div class="container">
+          <!-- LEFT PANEL -->
+          <div class="panel">
+            <h2>New Quotation</h2>
+
+            <label>Select Enquiry</label>
+            <select id="quoteEnquiry">
+              <option value="">-- Select Enquiry --</option>
+            </select>
+
+            <hr />
+
+            <label>Client Name</label>
+            <input id="qClientName" readonly />
+
+            <label>Company Name (Optional)</label>
+            <input id="qCompany" />
+
+            <label>GST No (Optional)</label>
+            <input id="qGST" />
+
+            <label>Add Category to Quotation</label>
+            <select id="qAddCategory">
+              <option value="">-- Select Category --</option>
+            </select>
+            
+            <label>Category Price (₹)</label>
+            <input id="qCategoryPrice" type="number" min="0" />
+            
+            <button class="btn" id="addCategoryBtn">+ Add Category</button>
+
+            <div class="actions">
+              <button class="btn" id="saveQuotationBtn">Save Quotation</button>
+            </div>
+          </div>
+
+          <!-- RIGHT PANEL -->
+          <div class="catalog">
+            <div class="card">
+              <strong>Quotation Preview</strong>
+              <iframe id="quotePreviewFrame" style="width:100%; height:600px; border:none;"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CLIENT INPUT TAB -->
+      <div id="tab-clientinput" class="tab-panel" style="display:none">
+        <div class="container">
+          <!-- LEFT PANEL -->
+          <div class="panel">
+            <h2>Client Input</h2>
+
+            <label>Select Enquiry</label>
+            <select id="ciEnquiry">
+              <option value="">-- Select Enquiry --</option>
+            </select>
+
+            <label>Category</label>
+            <select id="ciCategory">
+              <option value="">-- Select Category --</option>
+            </select>
+
+            <hr />
+
+            <!-- PRODUCTS GENERATED HERE -->
+            <div id="ciProducts"></div>
+
+            <div class="actions">
+              <button class="btn" id="saveClientInputBtn">Save Client Input</button>
+            </div>
+          </div>
+
+          <!-- RIGHT PANEL -->
+          <div class="catalog">
+            <div class="card">
+              <strong>Preview</strong>
+              <iframe id="ciPreview" style="width:100%; height:600px; border:none;"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- IMPORT MODAL -->
+    <div id="importModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); align-items:center; justify-content:center; z-index:9999;">
+      <div style="background:#fff; padding:20px; border-radius:12px; width:420px">
+        <h3>Import Products</h3>
+
+        <p class="small">
+          ⚠ Please follow these rules:
+          <ul class="small">
+            <li>Do not leave Name & Model columns empty</li>
+            <li>Same Product Name = same Product</li>
+            <li>Can repeat Parameter Name to enter multiple value</li>
+            <li>Category must match existing category exactly</li>
+            <li>Do not change column headers or add new columns</li>
+          </ul>
+        </p>
+
+        <div style="display:flex; gap:8px; margin-top:12px">
+          <button class="btn ghost" id="downloadFormatBtn">Download Format</button>
+          <input type="file" id="importFile" accept=".xlsx" />
+        </div>
+
+        <div class="actions">
+          <button class="btn" id="startImportBtn">Import</button>
+          <button class="btn ghost" onclick="closeImport()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.28/dist/jspdf.plugin.autotable.min.js"></script>
+
+    <script>
+      let currentQuote = {
+        enquiryId: null,
+        client: {},
+        categories: []
+      };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        
+      // -------------------- Utilities --------------------
+      function showToast(message, opts = {}) {
+        const type = opts.type || "success";
+        const duration = opts.duration || 3000;
+        const container = document.getElementById("toast-container");
+        if (!container) return;
+        const toast = document.createElement("div");
+        toast.className = "toast " + (type === "success" ? "success" : "");
+        toast.innerHTML = `<div style="flex:1">${message}</div><button class="close-btn" aria-label="Close">&times;</button>`;
+        container.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add("show"));
+        const hide = () => {
+          toast.classList.remove("show");
+          setTimeout(() => toast.remove(), 260);
+        };
+        toast.querySelector(".close-btn").onclick = hide;
+        const t = setTimeout(hide, duration);
+        toast.addEventListener("mouseover", () => clearTimeout(t));
+        return { hide };
+      }
+
+      // Alias for compatibility
+      const toast = showToast;
+
+      function uid(prefix = "I") {
+        return (
+          prefix +
+          Date.now().toString(36) +
+          Math.random().toString(36).slice(2, 8)
+        );
+      }
+
+      function escapeHtml(s) {
+        if (!s) return "";
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      // -------------------- Storage --------------------
+      const PROD_KEY = "erp_products_v1";
+      const ENQ_KEY = "erp_enquiries_v1";
+      const CI_KEY = "erp_client_inputs_v1";
+      const QUOTE_KEY = "erp_quotations_v1";
+      
+      let products = JSON.parse(localStorage.getItem(PROD_KEY) || "[]");
+      let enquiries = JSON.parse(localStorage.getItem(ENQ_KEY) || "[]");
+      let clientInputs = JSON.parse(localStorage.getItem(CI_KEY) || "[]");
+      let quotations = JSON.parse(localStorage.getItem(QUOTE_KEY) || "[]");
+
+      function saveProducts() {
+        localStorage.setItem(PROD_KEY, JSON.stringify(products));
+      }
+
+      // -------------------- Tabs --------------------
+      document.querySelectorAll(".tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
+          tab.classList.add("active");
+          const name = tab.dataset.tab;
+          document.querySelectorAll(".tab-panel").forEach((p) => (p.style.display = "none"));
+          document.getElementById("tab-" + name).style.display = "block";
+          
+          if (name === "products") {
+            renderProducts();
+            populateProductCategoryOptions();
+          }
+          if (name === "enquiries") {
+            renderEnquiries();
+            populateEnquiryCategoryOptions();
+          }
+          if (name === "quotation") {
+            populateQuotationEnquiries();
+            populateAllProductCategories();
+          }
+          if (name === "clientinput") {
+            populateClientInputEnquiries();
+            populateClientInputCategories();
+          }
+        });
+      });
+
+      // -------------- IMPORT MODULE (IMPROVED) --------------
+      const importBtn = document.getElementById("importBtn");
+      const importModal = document.getElementById("importModal");
+      const startImportBtn = document.getElementById("startImportBtn");
+      const importFile = document.getElementById("importFile");
+      const downloadBtn = document.getElementById("downloadFormatBtn");
+
+      // Download Excel format
+      downloadBtn.addEventListener("click", () => {
+        const data = [
+          {
+            "Product Name": "Product A",
+            "Category": "ACLAS",
+            "Model No": "A-100",
+            "Description": "Type any description for the product",
+            "Price": 250000,
+            "Parameter Name": "Pressure",
+            "Parameter Value": "3 bar"
+          },
+          {
+            "Product Name": "Product A",
+            "Category": "ACLAS",
+            "Model No": "A-100",
+            "Description": "Type any description for the product",
+            "Price": 250000,
+            "Parameter Name": "Pressure",
+            "Parameter Value": "5 bar"
+          },
+          {
+            "Product Name": "Product B",
+            "Category": "Vaccuum Feed Gas Chlorination System",
+            "Model No": "A-100",
+            "Description": "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+            "Price": 7500,
+            "Parameter Name": "Pressure",
+            "Parameter Value": "5 bar"
+          }
+        ];
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Products");
+        XLSX.writeFile(wb, "product_import_format.xlsx");
+      });
+
+      // Open modal
+      importBtn.addEventListener("click", () => {
+        importModal.style.display = "flex";
+      });
+
+      // Close modal
+      window.closeImport = function () {
+        importModal.style.display = "none";
+      };
+
+      // Start import
+      startImportBtn.addEventListener("click", () => {
+        const file = importFile.files[0];
+
+        if (!file) {
+          toast("Please select an Excel (.xlsx) file");
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          try {
+            processXLSX(e.target.result);
+          } catch (err) {
+            console.error("IMPORT ERROR:", err);
+            toast("Import failed ❌ Check console");
+          }
+        };
+
+        reader.readAsArrayBuffer(file);
+        closeImport();
+      });
+
+      function processXLSX(buffer) {
+        console.log("Import started...");
+
+        const wb = XLSX.read(buffer, { type: "array" });
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+        console.log("Rows:", rows);
+
+        if (!rows.length) {
+          toast("Excel file is empty ❌");
+          return;
+        }
+
+        // 🔥 Merge same product names
+        const productMap = {};
+
+        rows.forEach(row => {
+          const name = String(row["Product Name"] || "").trim();
+          if (!name) return;
+
+          const category = String(row["Category"] || "Uncategorized").trim();
+          const model = String(row["Model No"] || "").trim();
+          const description = String(row["Description"] || "").trim();
+          const price = Number(row["Price"] || 0);
+
+          // Find existing product in current list OR map
+          let product =
+            productMap[name] ||
+            products.find(p => p.name.toLowerCase() === name.toLowerCase());
+
+          if (!product) {
+            product = {
+              id: uid("P"),
+              name,
+              category,
+              model,
+              description,
+              price,
+              params: []
+            };
+            productMap[name] = product;
+          }
+
+          const paramName = String(row["Parameter Name"] || "").trim();
+          const paramValue = String(row["Parameter Value"] || "").trim();
+
+          if (paramName && paramValue) {
+            const existing = product.params.find(p => p.name === paramName);
+
+            if (existing) {
+              if (!existing.value.includes(paramValue)) {
+                existing.value += " / " + paramValue;
+              }
+            } else {
+              product.params.push({ name: paramName, value: paramValue });
+            }
+          }
+        });
+
+        console.log("Merged products:", productMap);
+
+        // Update or insert products
+        Object.values(productMap).forEach(p => {
+          const idx = products.findIndex(x => x.name.toLowerCase() === p.name.toLowerCase());
+          if (idx >= 0) products[idx] = p;
+          else products.unshift(p);
+        });
+
+        saveProducts();
+        renderProducts();
+        updateCategoryLists();
+
+        toast("Import successful ✅");
+      }
+
+      function updateCategoryLists() {
+        populateProductCategoryOptions();
+        populateEnquiryCategoryOptions();
+      }
+
+      // -------------- PRODUCT MODULE --------------
+      const productFormEls = {
+        id: document.getElementById("prod_id"),
+        name: document.getElementById("ProductName"),
+        categoryInput: document.getElementById("ProductCategory"),
+        model: document.getElementById("ModelNo"),
+        desc: document.getElementById("Description"),
+        price: document.getElementById("Price"),
+        paramBody: document.querySelector("#paramTable tbody"),
+        addParamBtn: document.getElementById("addParamBtn"),
+        saveBtn: document.getElementById("saveProductBtn"),
+        clearBtn: document.getElementById("clearProductBtn"),
+      };
+      
+      const productListEl = document.getElementById("productList");
+      const productViewerCard = document.getElementById("productViewerCard");
+      const productViewerContent = document.getElementById("productViewerContent");
+      const categoryFilter = document.getElementById("categoryFilter");
+      const enqCategorySelect = document.getElementById("EnqCategory");
+      const vfgs010Section = document.getElementById("vfgs-010-section");
+
+      enqCategorySelect.addEventListener("change", () => {
+        if (enqCategorySelect.value === "Vaccuum Feed Gas Chlorination System(0-10Kg)") {
+          vfgs010Section.style.display = "block";
+        } else {
+          vfgs010Section.style.display = "none";
+        }
+      });
+
+      // Param helpers
+      function createParamRow(name = "", value = "") {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><input name="param_name[]" type="text" value="${escapeHtml(name)}" placeholder="Eg: Pressure"></td>
+          <td><input name="param_value[]" type="text" value="${escapeHtml(value)}" placeholder="e.g. 3 bar"></td>
+          <td><button type="button" class="remove-btn icon-btn del" title="Remove">×</button></td>
+        `;
+        return tr;
+      }
+
+      function ensureProductParamRow() {
+        if (!productFormEls.paramBody.querySelector("tr"))
+          productFormEls.paramBody.appendChild(createParamRow());
+      }
+
+      productFormEls.addParamBtn.addEventListener("click", () => {
+        productFormEls.paramBody.appendChild(createParamRow());
+        productFormEls.paramBody.lastElementChild.querySelector("input").focus();
+      });
+
+      productFormEls.paramBody.addEventListener("click", (e) => {
+        if (e.target && e.target.matches(".remove-btn")) {
+          const tr = e.target.closest("tr");
+          if (tr) tr.remove();
+          ensureProductParamRow();
+        }
+      });
+
+      if (!productFormEls.paramBody.querySelector("tr"))
+        productFormEls.paramBody.appendChild(createParamRow());
+
+      // Product save
+      productFormEls.saveBtn.addEventListener("click", () => {
+        const name = productFormEls.name.value.trim();
+        if (!name) {
+          showToast("Enter product name", { type: "error" });
+          productFormEls.name.focus();
+          return;
+        }
+        
+        const category = productFormEls.categoryInput.value.trim() || "Uncategorized";
+        const model = productFormEls.model.value.trim();
+        const description = productFormEls.desc.value.trim();
+        const price = Number(productFormEls.price.value || 0);
+        const params = Array.from(productFormEls.paramBody.querySelectorAll("tr"))
+          .map((r) => {
+            const n = r.querySelector('input[name="param_name[]"]').value.trim();
+            const v = r.querySelector('input[name="param_value[]"]').value.trim();
+            return n ? { name: n, value: v } : null;
+          })
+          .filter(Boolean);
+
+        if (productFormEls.id.value) {
+          const idx = products.findIndex((p) => p.id === productFormEls.id.value);
+          if (idx >= 0) {
+            products[idx] = {
+              ...products[idx],
+              name,
+              category,
+              model,
+              description,
+              price,
+              params,
+            };
+            showToast("Product updated");
+          }
+        } else {
+          products.unshift({
+            id: uid("P"),
+            name,
+            category,
+            model,
+            description,
+            price,
+            params,
+          });
+          showToast("Product saved");
+        }
+        
+        saveProducts();
+        renderProducts();
+        updateCategoryLists();
+        clearProductForm();
+      });
+
+      productFormEls.clearBtn.addEventListener("click", clearProductForm);
+      
+      function clearProductForm() {
+        productFormEls.id.value = "";
+        productFormEls.name.value = "";
+        productFormEls.categoryInput.value = "";
+        productFormEls.model.value = "";
+        productFormEls.desc.value = "";
+        productFormEls.price.value = "";
+        productFormEls.paramBody.innerHTML = "";
+        productFormEls.paramBody.appendChild(createParamRow());
+        document.getElementById("prodFormTitle").textContent = "New Product";
+      }
+
+      // Render products
+      function renderProducts() {
+        const sel = categoryFilter.value;
+        const list = sel ? products.filter((p) => p.category === sel) : products;
+        productListEl.innerHTML = "";
+        
+        if (list.length === 0) {
+          productListEl.innerHTML = '<div class="empty">No products yet</div>';
+          productViewerCard.style.display = "none";
+          return;
+        }
+        
+        list.forEach((p) => {
+          const wrapper = document.createElement("div");
+          wrapper.className = "product-wrapper";
+          const item = document.createElement("div");
+          item.className = "item";
+          const left = document.createElement("div");
+          left.innerHTML = `
+            <div class="meta">
+              <strong>${escapeHtml(p.name)}</strong> — 
+              <span style="color:var(--muted)">${escapeHtml(p.model || "")}</span>
+            </div>
+            <div class="desc">${escapeHtml(p.description || "")}</div>
+          `;
+          
+          const right = document.createElement("div");
+          right.className = "actions-inline";
+          
+          // View button
+          const viewBtn = document.createElement("button");
+          viewBtn.className = "icon-btn view";
+          viewBtn.title = "View";
+          viewBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2b7a2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+          viewBtn.addEventListener("click", () => toggleProductDetails(wrapper, p.id));
+          
+          // Edit
+          const editBtn = document.createElement("button");
+          editBtn.className = "icon-btn edit";
+          editBtn.title = "Edit";
+          editBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0a66ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>';
+          editBtn.addEventListener("click", () => loadProductToForm(p.id));
+          
+          // Delete
+          const delBtn = document.createElement("button");
+          delBtn.className = "icon-btn del";
+          delBtn.title = "Delete";
+          delBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>';
+          delBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (confirm("Delete product?")) {
+              products = products.filter((x) => x.id !== p.id);
+              saveProducts();
+              renderProducts();
+              updateCategoryLists();
+            }
+          });
+          
+          // Export button
+          const expBtn = document.createElement("button");
+          expBtn.className = "icon-btn export";
+          expBtn.title = "Export";
+          expBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>';
+          expBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            exportProductPDF(p.id);
+          });
+          
+          right.appendChild(viewBtn);
+          right.appendChild(editBtn);
+          right.appendChild(delBtn);
+          right.appendChild(expBtn);
+
+          item.appendChild(left);
+          item.appendChild(right);
+          wrapper.appendChild(item);
+          
+          // Details placeholder
+          const details = document.createElement("div");
+          details.className = "product-details";
+          details.style.display = "none";
+          wrapper.appendChild(details);
+          productListEl.appendChild(wrapper);
+        });
+      }
+
+      function toggleProductDetails(wrapper, id) {
+        document.querySelectorAll(".product-details").forEach((d) => {
+          if (d.parentElement !== wrapper) d.style.display = "none";
+        });
+        
+        const p = products.find((x) => x.id === id);
+        if (!p) return;
+        
+        const detailsEl = wrapper.querySelector(".product-details");
+        if (detailsEl.style.display === "block") {
+          detailsEl.style.display = "none";
+          return;
+        }
+        
+        let paramsHtml = '<div class="empty">No parameters</div>';
+        if (p.params && p.params.length) {
+          const grouped = {};
+          p.params.forEach(({ name, value }) => {
+            if (!grouped[name]) grouped[name] = [];
+            grouped[name].push(value);
+          });
+
+          paramsHtml = "<table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody>" +
+            Object.entries(grouped)
+              .map(([name, values]) => `
+                <tr>
+                  <td>${escapeHtml(name)}</td>
+                  <td>${escapeHtml(values.join(" / "))}</td>
+                </tr>
+              `).join("") +
+            "</tbody></table>";
+        }
+        
+        detailsEl.innerHTML = `
+          <div style="font-weight:600">
+            ${escapeHtml(p.name)} 
+            <small style="color:var(--muted)">(${escapeHtml(p.model || "")})</small>
+          </div>
+          <div style="margin-top:6px;color:var(--muted);font-size:13px">
+            ${escapeHtml(p.description || "")}
+          </div>
+          <div style="margin-top:8px">${paramsHtml}</div>
+        `;
+        detailsEl.style.display = "block";
+        detailsEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function loadProductToForm(id) {
+        const p = products.find((x) => x.id === id);
+        if (!p) return;
+        
+        productFormEls.id.value = p.id;
+        productFormEls.name.value = p.name;
+        productFormEls.categoryInput.value = p.category;
+        productFormEls.model.value = p.model;
+        productFormEls.desc.value = p.description;
+        productFormEls.price.value = p.price || "";
+        productFormEls.paramBody.innerHTML = "";
+        
+        if (p.params && p.params.length) {
+          p.params.forEach((r) => {
+            // Split values by " / " and create separate rows
+            const values = r.value.split(" / ");
+            values.forEach(val => {
+              productFormEls.paramBody.appendChild(createParamRow(r.name, val.trim()));
+            });
+          });
+        } else {
+          productFormEls.paramBody.appendChild(createParamRow());
+        }
+        
+        document.getElementById("prodFormTitle").textContent = "Edit Product";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      categoryFilter.addEventListener("change", renderProducts);
+
+      function exportProductPDF(productId) {
+        const p = products.find(x => x.id === productId);
+        if (!p) return;
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF("p", "mm", "a4");
+
+        let y = 20;
+
+        // Title
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(18);
+        doc.text(p.name, 20, y);
+
+        y += 8;
+        doc.setFontSize(11);
+        doc.setTextColor(120);
+        doc.text(p.category || "", 20, y);
+
+        // Product Info
+        y += 12;
+        doc.setTextColor(0);
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "bold");
+        doc.text("Model:", 20, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(p.model || "-", 40, y);
+
+        y += 8;
+        doc.setFont("helvetica", "bold");
+        doc.text("Price:", 20, y);
+        doc.setFont("helvetica", "normal");
+        doc.text("₹" + (p.price || "0"), 40, y);
+
+        y += 8;
+        doc.setFont("helvetica", "bold");
+        doc.text("Description:", 20, y);
+
+        y += 6;
+        doc.setFont("helvetica", "normal");
+        const descLines = doc.splitTextToSize(p.description || "-", 170);
+        doc.text(descLines, 20, y);
+        y += descLines.length * 6;
+
+        // Parameters
+        y += 10;
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(13);
+        doc.text("Parameters", 20, y);
+
+        const tableData = (p.params || []).map(param => [
+          param.name,
+          param.value
+        ]);
+
+        doc.autoTable({
+          startY: y + 6,
+          head: [["Parameter", "Value"]],
+          body: tableData,
+          theme: "plain",
+          styles: {
+            font: "helvetica",
+            fontSize: 10,
+            cellPadding: 4
+          },
+          headStyles: {
+            fillColor: [230, 230, 230],
+            textColor: [0, 0, 0],
+            fontStyle: "bold"
+          },
+          margin: { left: 20, right: 20 }
+        });
+
+        doc.save(`${p.name}_Datasheet.pdf`);
+      }
+
+      // Export Category button handler
+      document.getElementById("exportCategoryBtn").addEventListener("click", () => {
+        const category = categoryFilter.value;
+        if (!category) {
+          showToast("Please select a category to export", { type: "error" });
+          return;
+        }
+        exportCategoryPDF(category);
+      });
+
+      function exportCategoryPDF(category) {
+        const categoryProducts = products.filter(p => p.category === category);
+        
+        if (categoryProducts.length === 0) {
+          showToast("No products in this category", { type: "error" });
+          return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF("p", "mm", "a4");
+
+        let y = 20;
+
+        // Category Title
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.text(`Category: ${category}`, 20, y);
+        y += 10;
+
+        doc.setFontSize(11);
+        doc.setTextColor(120);
+        doc.text(`Total Products: ${categoryProducts.length}`, 20, y);
+        y += 15;
+
+        // Each product
+        categoryProducts.forEach((p, index) => {
+          if (y > 250) {
+            doc.addPage();
+            y = 20;
+          }
+
+          doc.setTextColor(0);
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(14);
+          doc.text(`${index + 1}. ${p.name}`, 20, y);
+          y += 7;
+
+          doc.setFontSize(10);
+          doc.setFont("helvetica", "normal");
+          doc.text(`Model: ${p.model || "-"}`, 25, y);
+          y += 5;
+          doc.text(`Price: ₹${p.price || "0"}`, 25, y);
+          y += 5;
+
+          if (p.description) {
+            const descLines = doc.splitTextToSize(p.description, 165);
+            doc.text(descLines, 25, y);
+            y += descLines.length * 5;
+          }
+
+          // Parameters table
+          if (p.params && p.params.length > 0) {
+            const tableData = p.params.map(param => [param.name, param.value]);
+            
+            doc.autoTable({
+              startY: y + 2,
+              head: [["Parameter", "Value"]],
+              body: tableData,
+              theme: "plain",
+              styles: { fontSize: 9, cellPadding: 3 },
+              headStyles: {
+                fillColor: [240, 240, 240],
+                textColor: [0, 0, 0],
+                fontStyle: "bold"
+              },
+              margin: { left: 25, right: 20 }
+            });
+
+            y = doc.lastAutoTable.finalY + 10;
+          } else {
+            y += 10;
+          }
+        });
+
+        doc.save(`${category}_Products.pdf`);
+        showToast("Category exported successfully");
+      }
+
+      function populateProductCategoryOptions() {
+        const defaultCats = [
+          "Vaccuum Feed Gas Chlorination System(0-10Kg)",
+          "Vaccuum Feed Gas Chlorination System(0-20Kg)",
+          "ACLAS",
+          "Neutralization System",
+          "Safety Kit",
+        ];
+        const savedCats = Array.from(new Set(products.map((p) => p.category).filter(Boolean)));
+        const allCats = Array.from(new Set([...defaultCats, ...savedCats]));
+        
+        const dl = document.getElementById("ProductCategoryList");
+        dl.innerHTML = "";
+        allCats.forEach((c) => {
+          const o = document.createElement("option");
+          o.value = c;
+          dl.appendChild(o);
+        });
+        
+        const sel = document.getElementById("categoryFilter");
+        sel.innerHTML = '<option value="">-- All Categories --</option>';
+        allCats.forEach((c) => {
+          const o = document.createElement("option");
+          o.value = c;
+          o.textContent = c;
+          sel.appendChild(o);
+        });
+      }
+
+      // -------------- ENQUIRY MODULE --------------
+      const enquiryFormEls = {
+        id: document.getElementById("enq_id"),
+        client: document.getElementById("ClientName"),
+        place: document.getElementById("ClientPlace"),
+        contact: document.getElementById("ClientContact"),
+        category: document.getElementById("EnqCategory"),
+        purpose: document.getElementById("EnqPurpose"),
+        waterType: document.getElementById("EnqWaterType"),
+        capacity: document.getElementById("EnqCapacity"),
+        dosage: document.getElementById("EnqDosage"),
+        working: document.getElementById("EnqWorking"),
+        standby: document.getElementById("EnqStandby"),
+        hours: document.getElementById("EnqHours"),
+        absorption: document.getElementById("EnqAbsorption"),
+        workingBlowers: document.getElementById("EnqWorkingBlowers"),
+        standbyBlowers: document.getElementById("EnqStandbyBlowers"),
+        saveBtn: document.getElementById("saveEnquiryBtn"),
+        clearBtn: document.getElementById("clearEnquiryBtn"),
+      };
+      
+      const enquiryListEl = document.getElementById("enquiryList");
+      const enqViewerCard = document.getElementById("enqViewerCard");
+      const enqViewerContent = document.getElementById("enqViewerContent");
+      const enqCategoryFilter = document.getElementById("enqCategoryFilter");
+      const purposeSelect = document.getElementById("EnqPurpose");
+      const prePostSection = document.getElementById("prepost-section");
+      const prePostSelect = document.getElementById("EnqPrePost");
+      const normalDosageSection = document.getElementById("normal-dosage-section");
+      const prePostDosageSection = document.getElementById("prepost-dosage-section");
+      const prePostSystemCount = document.getElementById("prepost-system-count");
+      const normalSystemCount = document.getElementById("normal-system-count");
+
+      purposeSelect.addEventListener("change", () => {
+        if (purposeSelect.value === "WTP") {
+          prePostSection.style.display = "block";
+        } else {
+          prePostSection.style.display = "none";
+          prePostDosageSection.style.display = "none";
+          normalDosageSection.style.display = "block";
+          prePostSelect.value = "";
+        }
+      });
+
+      prePostSelect.addEventListener("change", () => {
+        if (prePostSelect.value === "yes") {
+          prePostDosageSection.style.display = "block";
+          normalDosageSection.style.display = "none";
+          prePostSystemCount.style.display = "block";
+          normalSystemCount.style.display = "none";
+        } else {
+          prePostDosageSection.style.display = "none";
+          normalDosageSection.style.display = "none";
+          prePostSystemCount.style.display = "none";
+          normalSystemCount.style.display = "block";
+        }
+      });
+
+      function updateDosageAndSystemUI() {
+        const purpose = purposeSelect.value;
+        const prePost = prePostSelect.value;
+
+        normalDosageSection.style.display = "none";
+        prePostDosageSection.style.display = "none";
+        normalSystemCount.style.display = "none";
+        prePostSystemCount.style.display = "none";
+
+        if (purpose !== "WTP") {
+          normalDosageSection.style.display = "block";
+          normalSystemCount.style.display = "block";
+          return;
+        }
+
+        if (prePost === "yes") {
+          prePostDosageSection.style.display = "block";
+          prePostSystemCount.style.display = "block";
+          return;
+        }
+
+        if (prePost === "no") {
+          normalDosageSection.style.display = "block";
+          normalSystemCount.style.display = "block";
+        }
+      }
+
+      purposeSelect.addEventListener("change", updateDosageAndSystemUI);
+      prePostSelect.addEventListener("change", updateDosageAndSystemUI);
+
+      function populateEnquiryCategoryOptions() {
+        const defaultCats = [
+          "Vaccuum Feed Gas Chlorination System(0-10Kg)",
+          "Vaccuum Feed Gas Chlorination System(0-20Kg)",
+          "ACLAS",
+          "Neutralization System",
+          "Safety Kit",
+        ];
+        const savedCats = Array.from(new Set(products.map((p) => p.category).filter(Boolean)));
+        const allCats = Array.from(new Set([...defaultCats, ...savedCats]));
+        
+        const sel = document.getElementById("EnqCategory");
+        sel.innerHTML = '<option value="">-- Select Category --</option>';
+        allCats.forEach((c) => {
+          const o = document.createElement("option");
+          o.value = c;
+          o.textContent = c;
+          sel.appendChild(o);
+        });
+        
+        enqCategoryFilter.innerHTML = '<option value="">-- All Categories --</option>';
+        allCats.forEach((c) => {
+          const o = document.createElement("option");
+          o.value = c;
+          o.textContent = c;
+          enqCategoryFilter.appendChild(o);
+        });
+      }
+
+      enquiryFormEls.saveBtn.addEventListener("click", () => {
+        const client = enquiryFormEls.client.value.trim();
+        if (!client) {
+          showToast("Enter client name");
+          enquiryFormEls.client.focus();
+          return;
+        }
+        
+        const category = enquiryFormEls.category.value;
+        if (!category) {
+          showToast("Select category");
+          enquiryFormEls.category.focus();
+          return;
+        }
+        
+        const purpose = enquiryFormEls.purpose.value;
+        const waterType = enquiryFormEls.waterType.value;
+        const dosage = enquiryFormEls.dosage.value.trim();
+        
+        if (!((purpose && waterType) || dosage)) {
+          showToast("Either fill Purpose & Water Type, or fill Required Dosage", { type: "error", duration: 3500 });
+          return;
+        }
+        
+        let dosageData;
+        let systemData = null;
+
+        if (prePostSelect.value === "yes") {
+          dosageData = {
+            pre: document.getElementById("EnqPreDosage").value,
+            post: document.getElementById("EnqPostDosage").value
+          };
+
+          systemData = {
+            prePostSystems: {
+              pre: {
+                working: Number(document.getElementById("EnqPreWorking").value || 0),
+                standby: Number(document.getElementById("EnqPreStandby").value || 0)
+              },
+              post: {
+                working: Number(document.getElementById("EnqPostWorking").value || 0),
+                standby: Number(document.getElementById("EnqPostStandby").value || 0)
+              }
+            }
+          };
+        } else {
+          dosageData = enquiryFormEls.dosage.value;
+
+          systemData = {
+            systemCount: {
+              working: Number(document.getElementById("EnqSysWorking").value || 0),
+              standby: Number(document.getElementById("EnqSysStandby").value || 0)
+            }
+          };
+        }
+
+        const enq = {
+          id: enquiryFormEls.id.value || uid("E"),
+          client,
+          place: enquiryFormEls.place.value.trim(),
+          contact: enquiryFormEls.contact.value.trim(),
+          category,
+          purpose,
+          waterType,
+          capacity: enquiryFormEls.capacity.value.trim(),
+          dosage: dosageData,
+          packType: document.getElementById("EnqPackType").value,
+          prePost: document.getElementById("EnqPrePost").value,
+          working: enquiryFormEls.working.value || 0,
+          standby: enquiryFormEls.standby.value || 0,
+          hours: enquiryFormEls.hours.value.trim(),
+          absorption: enquiryFormEls.absorption.value || "",
+          
+          workingBlowers: Number(enquiryFormEls.workingBlowers.value || 0),
+          standbyBlowers: Number(enquiryFormEls.standbyBlowers.value || 0),
+          ...systemData,
+          created: Date.now(),
+        };
+
+        if (enquiryFormEls.id.value) {
+          enquiries = enquiries.map((x) => (x.id === enq.id ? enq : x));
+          showToast("Enquiry updated");
+        } else {
+          enquiries.unshift(enq);
+          showToast("Enquiry saved");
+        }
+        
+        localStorage.setItem(ENQ_KEY, JSON.stringify(enquiries));
+        renderEnquiries();
+        clearEnquiryForm();
+      });
+
+      enquiryFormEls.clearBtn.addEventListener("click", clearEnquiryForm);
+      
+      function clearEnquiryForm() {
+        enquiryFormEls.id.value = "";
+        enquiryFormEls.client.value = "";
+        enquiryFormEls.place.value = "";
+        enquiryFormEls.contact.value = "";
+        enquiryFormEls.category.value = "";
+        enquiryFormEls.purpose.value = "";
+        enquiryFormEls.waterType.value = "";
+        enquiryFormEls.capacity.value = "";
+        enquiryFormEls.dosage.value = "";
+        enquiryFormEls.working.value = "";
+        enquiryFormEls.standby.value = "";
+        enquiryFormEls.hours.value = "";
+        enquiryFormEls.absorption.value = "";
+        enquiryFormEls.workingBlowers.value = "";
+        enquiryFormEls.standbyBlowers.value = "";
+        document.getElementById("enqFormTitle").textContent = "New Enquiry";
+      }
+
+      function renderEnquiries() {
+        const sel = enqCategoryFilter.value;
+        const list = sel ? enquiries.filter((e) => e.category === sel) : enquiries;
+        enquiryListEl.innerHTML = "";
+        
+        if (list.length === 0) {
+          enquiryListEl.innerHTML = '<div class="empty">No enquiries found</div>';
+          enqViewerCard.style.display = "none";
+          return;
+        }
+        
+        list.forEach((e) => {
+          const wrapper = document.createElement("div");
+          wrapper.className = "item";
+          const left = document.createElement("div");
+          left.innerHTML = `
+            <div class="meta">
+              <strong>${escapeHtml(e.client)}</strong> — 
+              <span style="color:var(--muted)">${escapeHtml(e.category)}</span>
+            </div>
+            <div class="desc">${escapeHtml(e.place || "")} · ${escapeHtml(e.contact || "")}</div>
+          `;
+          
+          const right = document.createElement("div");
+          right.className = "actions-inline";
+          
+          const viewBtn = document.createElement("button");
+          viewBtn.className = "icon-btn view";
+          viewBtn.title = "View";
+          viewBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2b7a2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+          viewBtn.addEventListener("click", () => toggleEnquiryDetails(wrapper, e.id));
+          
+          const editBtn = document.createElement("button");
+          editBtn.className = "icon-btn edit";
+          editBtn.title = "Edit";
+          editBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0a66ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>';
+          editBtn.addEventListener("click", () => loadEnquiryToForm(e.id));
+          
+          const enquiryId = e.id; // Store enquiry ID before creating button
+          const delBtn = document.createElement("button");
+          delBtn.className = "icon-btn del";
+          delBtn.title = "Delete";
+          delBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>';
+          delBtn.addEventListener("click", (evt) => {
+            evt.stopPropagation();
+            if (confirm("Delete enquiry?")) {
+              enquiries = enquiries.filter((x) => x.id !== enquiryId);
+              localStorage.setItem(ENQ_KEY, JSON.stringify(enquiries));
+              renderEnquiries();
+            }
+          });
+          
+          right.appendChild(viewBtn);
+          right.appendChild(editBtn);
+          right.appendChild(delBtn);
+          wrapper.appendChild(left);
+          wrapper.appendChild(right);
+          
+          const details = document.createElement("div");
+          details.className = "product-details";
+          details.style.display = "none";
+          wrapper.appendChild(details);
+          enquiryListEl.appendChild(wrapper);
+        });
+      }
+
+      function toggleEnquiryDetails(wrapper, id) {
+        document.querySelectorAll(".enquiry-list .product-details").forEach((d) => {
+          if (d.parentElement !== wrapper) d.style.display = "none";
+        });
+        
+        const e = enquiries.find((x) => x.id === id);
+        if (!e) return;
+        
+        const detailsEl = wrapper.querySelector(".product-details");
+        if (!detailsEl) return;
+        
+        if (detailsEl.style.display === "block") {
+          detailsEl.style.display = "none";
+          return;
+        }
+        
+        detailsEl.innerHTML = `
+          <div style="font-weight:600">
+            ${escapeHtml(e.client)} 
+            <small style="color:var(--muted)">(${escapeHtml(e.category)})</small>
+          </div>
+          <div style="margin-top:6px;color:var(--muted)">
+            ${escapeHtml(e.place || "")} · ${escapeHtml(e.contact || "")}
+          </div>
+          <div style="margin-top:8px">
+            <table>
+              <tbody>
+                <tr><th style="text-align:left">Purpose</th><td>${escapeHtml(e.purpose || "")}</td></tr>
+                <tr><th style="text-align:left">Water Type</th><td>${escapeHtml(e.waterType || "")}</td></tr>
+                <tr><th style="text-align:left">Capacity</th><td>${escapeHtml(e.capacity || "")}</td></tr>
+                ${typeof e.dosage === "object" ? `
+                  ${e.prePostSystems ? `
+                    <tr>
+                      <th style="text-align:left">Pre System (W / S)</th>
+                      <td>${e.prePostSystems.pre.working} / ${e.prePostSystems.pre.standby}</td>
+                    </tr>
+                    <tr>
+                      <th style="text-align:left">Post System (W / S)</th>
+                      <td>${e.prePostSystems.post.working} / ${e.prePostSystems.post.standby}</td>
+                    </tr>
+                  ` : e.systemCount ? `
+                    <tr>
+                      <th style="text-align:left">System (W / S)</th>
+                      <td>${e.systemCount.working} / ${e.systemCount.standby}</td>
+                    </tr>
+                  ` : ""}
+                  <tr>
+                    <th style="text-align:left">Pre Dosage</th>
+                    <td>${escapeHtml(e.dosage.pre || "")}</td>
+                  </tr>
+                  <tr>
+                    <th style="text-align:left">Post Dosage</th>
+                    <td>${escapeHtml(e.dosage.post || "")}</td>
+                  </tr>
+                ` : `
+                  <tr>
+                    <th style="text-align:left">Required Dosage</th>
+                    <td>${escapeHtml(e.dosage || "")}</td>
+                  </tr>
+                `}
+                <tr><th style="text-align:left">Working / Standby</th><td>${escapeHtml(e.working || "0")} / ${escapeHtml(e.standby || "0")}</td></tr>
+                <tr><th style="text-align:left">Working Hours</th><td>${escapeHtml(e.hours || "")}</td></tr>
+                <tr><th style="text-align:left">Absorption/Neutralisation</th><td>${escapeHtml(e.absorption || "")}</td></tr>
+                <tr><th style="text-align:left">Working / Standby Blowers</th><td>${escapeHtml(e.workingBlowers || "0")} / ${escapeHtml(e.standbyBlowers || "0")}</td></tr>
+              </tbody>
+            </table>
+          </div>
+        `;
+
+        detailsEl.style.display = "block";
+        detailsEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function loadEnquiryToForm(id) {
+        const e = enquiries.find((x) => x.id === id);
+        if (!e) return;
+        
+        enquiryFormEls.id.value = e.id;
+        enquiryFormEls.client.value = e.client;
+        enquiryFormEls.place.value = e.place;
+        enquiryFormEls.contact.value = e.contact;
+        enquiryFormEls.category.value = e.category;
+        enquiryFormEls.purpose.value = e.purpose;
+        enquiryFormEls.waterType.value = e.waterType;
+        enquiryFormEls.capacity.value = e.capacity;
+        enquiryFormEls.dosage.value = e.dosage;
+        enquiryFormEls.working.value = e.working;
+        enquiryFormEls.standby.value = e.standby;
+        enquiryFormEls.hours.value = e.hours;
+        enquiryFormEls.absorption.value = e.absorption || "";
+        enquiryFormEls.workingBlowers.value = e.workingBlowers || "";
+        enquiryFormEls.standbyBlowers.value = e.standbyBlowers || "";
+
+        document.getElementById("enqFormTitle").textContent = "Edit Enquiry";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      enqCategoryFilter.addEventListener("change", renderEnquiries);
+
+      function clearVFGSFields() {
+        vfgs010Section.querySelectorAll("input, select, textarea").forEach((el) => {
+          if (el.tagName === "SELECT") el.value = "";
+          else el.value = "";
+        });
+      }
+
+      enqCategorySelect.addEventListener("change", () => {
+        if (enqCategorySelect.value === "Vaccuum Feed Gas Chlorination System(0-10Kg)") {
+          vfgs010Section.style.display = "block";
+        } else {
+          vfgs010Section.style.display = "none";
+          clearVFGSFields();
+        }
+      });
+
+      // -------------- QUOTATION MODULE --------------
+      function buildCalcBaseFromEnquiry(enquiry) {
+  const tonners = {
+    working: Number(enquiry.working || 0),
+    standby: Number(enquiry.standby || 0)
+  };
+
+  let systems;
+  let boosterPump = 0;
+
+  if (enquiry.prePost === "yes" && enquiry.prePostSystems) {
+    systems = {
+      mode: "prepost",
+      pre: enquiry.prePostSystems.pre,
+      post: enquiry.prePostSystems.post
+    };
+
+    boosterPump =
+      systems.pre.working + systems.pre.standby +
+      systems.post.working + systems.post.standby;
+
+  } else {
+    systems = {
+      mode: "single",
+      total: enquiry.systemCount || { working: 0, standby: 0 }
+    };
+
+    boosterPump = systems.total.working + systems.total.standby;
+  }
+
+  return {
+    packType: enquiry.packType,
+    tonners,
+    systems,
+    boosterPump
+  };
+}
+
+
+      function calculateBOQQty(boqKey, base) {
+        const tonnerTotal = base.tonners.working + base.tonners.standby;
+
+        const systemTotal = base.systems.mode === "prepost"
+          ? base.systems.pre.working + base.systems.pre.standby + base.systems.post.working + base.systems.post.standby
+          : base.systems.total.working + base.systems.total.standby;
+
+        switch (boqKey) {
+          case "CHLORINE TONNER":
+          case "CHLORINE CYLINDER":
+            return tonnerTotal;
+
+          case "TONNER ROLLER SUPPORTS":
+          case "HALF HOOD":
+          case "FULL HOOD":
+            return base.packType === "Tonners" ? tonnerTotal : 0;
+
+          case "ATC WITH YOKE":
+          case "FLEXIBLE COPPER COIL TUBE":
+            return tonnerTotal;
+
+          case "GAS FILTER":
+          case "BALL VALVE (CS)":
+          case "PRESSURE REDUCING VALVE":
+          case "VACUUM REGULATOR":
+          case "PRESSURE RELIEF VALVE":
+          case "CHLORINATOR":
+          case "ROTAMETER":
+          case "FLOW CONTROL VALVE":
+          case "PRESSURE REGULATOR":
+          case "VACUUM RELIEF VALVE":
+          case "VACCUM GAUGE":
+          case "DRAIN VALVE":
+          case "INJECTOR":
+          case "CHECK VALVE (PVC)":
+          case "BALL VALVE (PVC)":
+          case "BOOSTER PUMP":
+            return systemTotal;
+
+          case "BUTTERFLY VALVE":
+            return systemTotal * 3;
+
+          case "PRESSURE GAUGE (WL)":
+          case "ISOLATION VALVE":
+            return systemTotal;
+
+          case "STRAINER":
+            return 1;
+
+          case "NON RETURN VALVE":
+            return tonnerTotal;
+
+          default:
+            return "";
+        }
+      }
+
+      const qEls = {
+        enquiry: document.getElementById("quoteEnquiry"),
+        client: document.getElementById("qClientName"),
+        company: document.getElementById("qCompany"),
+        gst: document.getElementById("qGST"),
+        price: document.getElementById("qCategoryPrice"),
+        preview: document.getElementById("quotePreviewFrame"),
+        saveBtn: document.getElementById("saveQuotationBtn")
+      };
+
+      
+
+      function populateAllProductCategories() {
+        const sel = document.getElementById("qAddCategory");
+        sel.innerHTML = '<option value="">-- Select Category --</option>';
+
+        const defaultCats = [
+          "Vaccuum Feed Gas Chlorination System(0-10Kg)",
+          "Vaccuum Feed Gas Chlorination System(0-20Kg)",
+          "ACLAS",
+          "Neutralization System",
+          "Safety Kit"
+        ];
+
+        const savedCats = products.map(p => p.category).filter(Boolean);
+        const cats = Array.from(new Set([...defaultCats, ...savedCats]));
+
+        cats.forEach(c => {
+          const o = document.createElement("option");
+          o.value = c;
+          o.textContent = c;
+          sel.appendChild(o);
+        });
+      }
+
+      qEls.enquiry.addEventListener("change", () => {
+        const e = enquiries.find(x => x.id === qEls.enquiry.value);
+        if (!e) return;
+
+        qEls.client.value = e.client;
+        currentQuote.enquiryId = e.id;
+        currentQuote.client = {
+          name: e.client,
+          company: "",
+          gst: "",
+          place: e.place,
+          contact: e.contact
+        };
+      });
+
+      document.getElementById("addCategoryBtn").addEventListener("click", () => {
+  const category = document.getElementById("qAddCategory").value;
+  const price = Number(document.getElementById("qCategoryPrice").value || 0);
+
+  if (!currentQuote.enquiryId) {
+    showToast("Please select an enquiry first", { type: "error" });
+    return;
+  }
+
+  if (!category) {
+    showToast("Select a category", { type: "error" });
+    return;
+  }
+
+  // ✅ Prevent duplicate category
+  if (currentQuote.categories.some(c => c.category === category)) {
+    showToast("Category already added", { type: "error" });
+    return;
+  }
+
+  const prods = products.filter(p => p.category === category);
+
+  if (!prods.length) {
+    showToast("No products found in this category", { type: "error" });
+    return;
+  }
+
+  const enquiry = enquiries.find(e => e.id === currentQuote.enquiryId);
+  if (!enquiry) {
+    showToast("Enquiry not found", { type: "error" });
+    return;
+  }
+
+  const calcBase = buildCalcBaseFromEnquiry(enquiry);
+
+  const boq = prods.map(p => ({
+    productId: p.id,
+    name: p.name,
+    qty: calculateBOQQty(p.name.trim().toUpperCase(), calcBase), // ✅ FIX
+    price: p.price || ""
+  }));
+
+  const categoryObj = {
+    category,
+    categoryPrice: price,
+    boq
+  };
+
+  // ✅ THIS IS THE KEY FIX
+  currentQuote.categories.push(categoryObj);
+
+  console.log("✅ Category added:", categoryObj);
+  console.log("✅ Current Quote:", currentQuote);
+
+  renderQuotationPreview();
+  showToast("Category added to quotation");
+});
+
+
+      function renderQuotationPreview() {
+        let html = `
+          <strong>${escapeHtml(currentQuote.client.name)}</strong><br/>
+          ${escapeHtml(qEls.company.value || "")}<br/>
+          ${escapeHtml(qEls.gst.value || "")}
+          <hr/>
+        `;
+
+        currentQuote.categories.forEach((c, ci) => {
+          html += `
+            <h4>${escapeHtml(c.category)}</h4>
+            <div>Category Price: ₹${c.categoryPrice}</div>
+            <table>
+              <tr>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th></th>
+              </tr>
+          `;
+
+          c.boq.forEach((b, bi) => {
+            html += `
+              <tr>
+                <td>${escapeHtml(b.name)}</td>
+                <td>
+                  <input type="number" min="1" value="${b.qty}" 
+                    onchange="updateBOQQty(${ci},${bi},this.value)" />
+                </td>
+                <td>${b.price || ""}</td>
+                <td>
+                  <button onclick="removeBOQItem(${ci},${bi})">×</button>
+                </td>
+              </tr>
+            `;
+          });
+
+          html += "</table><hr/>";
+        });
+
+       
+        
+        
+        const pdf = generateQuotationPDF(currentQuote);
+        const url = pdf.output("bloburl");
+        document.getElementById("quotePreviewFrame").src = url;
+      }
+
+      window.updateBOQQty = (ci, bi, v) => {
+        currentQuote.categories[ci].boq[bi].qty = Number(v);
+      };
+
+      window.removeBOQItem = (ci, bi) => {
+        currentQuote.categories[ci].boq.splice(bi, 1);
+        renderQuotationPreview();
+      };
+
+      qEls.saveBtn.addEventListener("click", () => {
+        if (!currentQuote.enquiryId || !currentQuote.categories.length) {
+          showToast("Quotation incomplete", { type: "error" });
+          return;
+        }
+
+        currentQuote.client.company = qEls.company.value;
+        currentQuote.client.gst = qEls.gst.value;
+
+        quotations.unshift({
+          id: uid("Q"),
+          ...currentQuote,
+          createdAt: Date.now()
+        });
+
+        localStorage.setItem(QUOTE_KEY, JSON.stringify(quotations));
+        showToast("Quotation saved");
+
+        currentQuote = { enquiryId: null, client: {}, categories: [] };
+        qEls.preview.innerHTML = "No quotation created yet";
+      });
+
+      function populateQuotationEnquiries() {
+        const sel = document.getElementById("quoteEnquiry");
+        sel.innerHTML = '<option value="">-- Select Enquiry --</option>';
+
+        enquiries.forEach(e => {
+          const o = document.createElement("option");
+          o.value = e.id;
+          o.textContent = `${e.client} (${e.category})`;
+          sel.appendChild(o);
+        });
+      }
+
+      function generateQuotationPDF(quote) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.text("Quotation", 14, 20);
+        return doc;
+      }
+
+      // -------------- CLIENT INPUT MODULE --------------
+      const ciEnquiry = document.getElementById("ciEnquiry");
+      const ciCategory = document.getElementById("ciCategory");
+      const ciProducts = document.getElementById("ciProducts");
+      const saveCIButton = document.getElementById("saveClientInputBtn");
+
+      function populateClientInputEnquiries() {
+        ciEnquiry.innerHTML = '<option value="">-- Select Enquiry --</option>';
+
+        if (!enquiries.length) return;
+
+        enquiries.forEach(e => {
+          const opt = document.createElement("option");
+          opt.value = e.id;
+          opt.textContent = `${e.client} (${e.category})`;
+          ciEnquiry.appendChild(opt);
+        });
+      }
+
+      function populateClientInputCategories() {
+        ciCategory.innerHTML = '<option value="">-- Select Category --</option>';
+
+        const cats = Array.from(new Set(products.map(p => p.category).filter(Boolean)));
+
+        cats.forEach(c => {
+          const opt = document.createElement("option");
+          opt.value = c;
+          opt.textContent = c;
+          ciCategory.appendChild(opt);
+        });
+      }
+
+      ciCategory.addEventListener("change", renderCIProducts);
+
+      function renderCIProducts() {
+        const category = ciCategory.value;
+        ciProducts.innerHTML = "";
+
+        if (!category) return;
+
+        const catProducts = products.filter(p => p.category === category);
+
+        catProducts.forEach(p => {
+          const grouped = {};
+
+          p.params.forEach(({ name, value }) => {
+            if (!grouped[name]) grouped[name] = [];
+            // Split values by " / " to get individual values
+            const values = value.split(" / ").map(v => v.trim());
+            values.forEach(v => {
+              if (!grouped[name].includes(v)) {
+                grouped[name].push(v);
+              }
+            });
+          });
+
+          const block = document.createElement("div");
+          block.className = "ci-product";
+
+          let html = `<h4>${escapeHtml(p.name)}</h4>`;
+
+          Object.entries(grouped).forEach(([param, values]) => {
+            // Only show dropdown if there are multiple values
+            if (values.length > 1) {
+              html += `
+                <label>${escapeHtml(param)}</label>
+                <select data-product="${p.id}" data-param="${param}">
+                  ${values.map((v, i) =>
+                    `<option value="${escapeHtml(v)}" ${i === 0 ? "selected" : ""}>${escapeHtml(v)}</option>`
+                  ).join("")}
+                </select>
+              `;
+            } else {
+              // Show as read-only text for single values
+              html += `
+                <label>${escapeHtml(param)}</label>
+                <input type="text" value="${escapeHtml(values[0])}" readonly 
+                  data-product="${p.id}" data-param="${param}" 
+                  style="background: #f5f5f5; cursor: default;" />
+              `;
+            }
+          });
+
+          block.innerHTML = html;
+          ciProducts.appendChild(block);
+        });
+      }
+
+      saveCIButton.addEventListener("click", () => {
+        const enquiryId = ciEnquiry.value;
+        const category = ciCategory.value;
+
+        if (!enquiryId || !category) {
+          showToast("Select enquiry & category", { type: "error" });
+          return;
+        }
+
+        const productMap = {};
+
+        // Capture both select and input values
+        ciProducts.querySelectorAll("select, input[data-product]").forEach(el => {
+          const pid = el.dataset.product;
+          const param = el.dataset.param;
+          if (!productMap[pid]) productMap[pid] = {};
+          productMap[pid][param] = el.value;
+        });
+
+        const payload = {
+          id: uid("CI"),
+          enquiryId,
+          category,
+          products: Object.entries(productMap).map(([pid, params]) => ({
+            productId: pid,
+            params
+          })),
+          createdAt: Date.now()
+        };
+
+        clientInputs.unshift(payload);
+        localStorage.setItem(CI_KEY, JSON.stringify(clientInputs));
+        showToast("Client input saved");
+
+        const pdf = generateDatasheetPDF(payload);
+        const pdfURL = pdf.output("bloburl");
+        document.getElementById("ciPreview").src = pdfURL;
+      });
+
+      function generateDatasheetPDF(clientInput) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        let y = 15;
+
+        doc.setFontSize(16);
+        doc.text("TECHNICAL DATASHEET", 14, y);
+        y += 10;
+
+        doc.setFontSize(11);
+        doc.text(`Category: ${clientInput.category}`, 14, y);
+        y += 8;
+
+        clientInput.products.forEach(p => {
+          const product = products.find(x => x.id === p.productId);
+          if (!product) return;
+
+          doc.setFontSize(12);
+          doc.text(product.name, 14, y);
+          y += 6;
+
+          const rows = Object.entries(p.params).map(([k, v]) => [k, v]);
+
+          doc.autoTable({
+            startY: y,
+            head: [["Parameter", "Selected Value"]],
+            body: rows,
+            theme: "plain",
+            styles: { fontSize: 10 }
+          });
+
+          y = doc.lastAutoTable.finalY + 8;
+        });
+
+        return doc;
+      }
+
+      // -------------- INIT --------------
+      populateProductCategoryOptions();
+      populateEnquiryCategoryOptions();
+      renderProducts();
+      renderEnquiries();
+
+      window.addEventListener("beforeunload", () => {
+        saveProducts();
+        localStorage.setItem(ENQ_KEY, JSON.stringify(enquiries));
+      });
+
+    });
+    </script>
+</body>
+</html>
