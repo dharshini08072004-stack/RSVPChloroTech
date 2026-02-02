@@ -326,6 +326,7 @@
         <div class="tab active" data-tab="products">Product List</div>
         <div class="tab" data-tab="enquiries">Enquiry</div>
         <div class="tab" data-tab="clientinput">Client Input</div>
+        <div class="tab" data-tab="calculation">Calculation</div>
       </div>
 
       <!-- PRODUCTS TAB -->
@@ -595,6 +596,56 @@
           </div>
         </div>
       </div>
+
+      <!-- CALCULATION TAB -->
+<div id="tab-calculation" class="tab-panel" style="display:none">
+  <div class="container">
+
+    <!-- LEFT PANEL -->
+    <div class="panel">
+      <h2>Calculations</h2>
+
+      <label>Category</label>
+      <select id="calcCategory">
+        <option value="">-- Select Category --</option>
+        <option value="Vaccuum Feed Gas Chlorination System">
+          Vaccuum Feed Gas Chlorination System
+        </option>
+        <option value="ACLAS">ACLAS</option>
+        <option value="Neutralization System">Neutralization System</option>
+        <option value="Safety Kit">Safety Kit</option>
+      </select>
+
+      <!-- SECOND DROPDOWN -->
+      <div id="vfgsCalcSection" style="display:none; margin-top:12px">
+        <label>Calculation Type</label>
+        <select id="vfgsCalcType">
+          <option value="">-- Select Calculation --</option>
+          <option>Chlorinator Calculation</option>
+          <option>No of Tonners / Cylinders Calculation</option>
+          <option>Booster Pump Calculation</option>
+          <option>Blower Calculation</option>
+          <option>Booster Pump Head Loss Calculation</option>
+          <option>Injector Head Loss Calculation</option>
+          <option>Tank Calculation</option>
+          <option>Tower Calculation</option>
+          <option>Diffuser Calculation</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="catalog">
+      <div class="card">
+        <strong>Calculation Preview</strong>
+        <div id="calcPreview" class="small" style="margin-top:10px">
+          Select a category and calculation type to proceed.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
       <!-- QUOTATION TAB -->
       <div id="tab-quotation" class="tab-panel" style="display:none">
@@ -1864,6 +1915,36 @@
           clearVFGSFields();
         }
       });
+      const calcCategory = document.getElementById("calcCategory");
+const vfgsCalcSection = document.getElementById("vfgsCalcSection");
+const vfgsCalcType = document.getElementById("vfgsCalcType");
+const calcPreview = document.getElementById("calcPreview");
+
+// Show second dropdown only for VFGS
+calcCategory.addEventListener("change", () => {
+  if (calcCategory.value === "Vaccuum Feed Gas Chlorination System") {
+    vfgsCalcSection.style.display = "block";
+  } else {
+    vfgsCalcSection.style.display = "none";
+    vfgsCalcType.value = "";
+  }
+
+  calcPreview.textContent = "Select calculation type.";
+});
+
+// Update preview text
+vfgsCalcType.addEventListener("change", () => {
+  if (!vfgsCalcType.value) {
+    calcPreview.textContent = "Select calculation type.";
+    return;
+  }
+
+  calcPreview.innerHTML = `
+    <strong>${vfgsCalcType.value}</strong><br/>
+    Calculation UI will be added here.
+  `;
+});
+
 
       // -------------- QUOTATION MODULE --------------
       function buildCalcBaseFromEnquiry(enquiry) {
